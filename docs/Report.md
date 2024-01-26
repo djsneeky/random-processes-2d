@@ -4,7 +4,7 @@ Read and analyze the gray scale image `img04g.tif`.
 
 ### Grayscale Input Image
 
-
+![Alt text](../img/img04g.png)
 
 ### Power Density 64 x 64
 
@@ -31,8 +31,9 @@ def BetterSpecAnal(x: np.array, win_size: int, num_win_per_side: int, output_ima
     # Get central windows
     center_x = x.shape[0] // 2
     center_y = x.shape[1] // 2
-    start_x = center_x - (num_win_per_side // 2) * win_size
-    start_y = center_y - (num_win_per_side // 2) * win_size
+    start_x = (center_x - win_size // 2) - (num_win_per_side // 2) * win_size
+    start_y = (center_y - win_size // 2) - (num_win_per_side // 2) * win_size
+    # print(start_x, start_y)
     windows = [x[i:i+win_size, j:j+win_size] for i in range(start_x, start_x+num_win_per_side*win_size, win_size)
                                                 for j in range(start_y, start_y+num_win_per_side*win_size, win_size)]
     
@@ -49,7 +50,7 @@ def BetterSpecAnal(x: np.array, win_size: int, num_win_per_side: int, output_ima
         psd_sum += np.abs(dft)**2
         
     # Average power spectral density across windows
-    psd_avg = psd_sum / (len(windows) * win_size)
+    psd_avg = psd_sum / (len(windows) * win_size**2)
 
     # Plot the result using a 3-D mesh plot and label the x and y axes properly.
     fig = plt.figure()
@@ -65,3 +66,23 @@ def BetterSpecAnal(x: np.array, win_size: int, num_win_per_side: int, output_ima
     fig.colorbar(surf, shrink=0.5, aspect=5)
     fig.savefig(output_image_path)
 ```
+
+## Power Spectral Density of a 2-D AR Process
+
+### Uniform Input Image
+
+![Alt text](../img/ar_image.png)
+
+### IIR Filtered Uniform Input Image
+
+![Alt text](../img/ar_image_filtered.png)
+
+### Theoretical Power Spectral Density
+
+![Alt text](../img/ar_image_psd.png)
+
+### Better Power Spectral Density
+
+Uses the `BetterSpecAnal` function which performs windowed spectral density, then applies an average to smooth noise.
+
+![Alt text](../img/ar_image_better_psd.png)
